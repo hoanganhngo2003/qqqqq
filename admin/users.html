@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người dùng</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../image/logo.png" alt="HA Farm Academy" class="admin-logo-img">
+                <span>HA Farm Academy</span>
+            </div>
+            <div class="admin-subtitle">Admin Panel</div>
+            <nav class="admin-nav">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="articles.html"><i class="fas fa-newspaper"></i> Bài viết</a>
+                <a href="users.html" class="active"><i class="fas fa-users"></i> Người dùng</a>
+                <a href="comments.html"><i class="fas fa-comments"></i> Bình luận</a>
+                <a href="questions.html"><i class="fas fa-question-circle"></i> Câu hỏi</a>
+                <a href="contacts.html"><i class="fas fa-envelope"></i> Liên hệ</a>
+                <a href="../index.html"><i class="fas fa-home"></i> Về trang chủ</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Quản lý Người dùng</h1>
+                <div class="user-info">
+                    <span id="adminName">Admin</span>
+                    <a href="#" id="adminLogout" class="btn btn-outline btn-sm">Đăng xuất</a>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="admin-toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-success" id="addUserBtn">
+                        <i class="fas fa-user-plus"></i> Thêm người dùng
+                    </button>
+                    <button class="btn btn-warning" id="exportUsersBtn" title="Xuất dữ liệu người dùng">
+                        <i class="fas fa-download"></i> Xuất JSON
+                    </button>
+                    <button class="btn btn-primary" id="syncUsersBtn" title="Đồng bộ với file gốc">
+                        <i class="fas fa-sync"></i> Đồng bộ
+                    </button>
+                </div>
+                <div class="toolbar-right">
+                    <select id="roleFilter" class="filter-select">
+                        <option value="">Tất cả vai trò</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                    <input type="text" id="searchUser" placeholder="Tìm kiếm người dùng..." class="search-input">
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid" style="margin-bottom: 20px;">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3 id="totalUsers">0</h3>
+                    <p>Tổng người dùng</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3 id="totalAdmins">0</h3>
+                    <p>Quản trị viên</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-user"></i>
+                    <h3 id="totalRegularUsers">0</h3>
+                    <p>Người dùng thường</p>
+                </div>
+            </div>
+
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Số điện thoại</th>
+                            <th>Vai trò</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <tr><td colspan="7" style="text-align: center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit User Modal -->
+    <div class="modal" id="userModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="userModalTitle">Thêm người dùng mới</h2>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="userForm" class="admin-form">
+                <input type="hidden" id="userId">
+                
+                <div class="form-group">
+                    <label for="userFullname">Họ và tên *</label>
+                    <input type="text" id="userFullname" required placeholder="Nhập họ tên đầy đủ">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userEmail">Email *</label>
+                        <input type="email" id="userEmail" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Số điện thoại</label>
+                        <input type="tel" id="userPhone" placeholder="0123456789">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userPassword">Mật khẩu *</label>
+                        <input type="password" id="userPassword" placeholder="Ít nhất 6 ký tự">
+                        <small id="passwordHint">Để trống nếu không muốn đổi mật khẩu</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Vai trò *</label>
+                        <select id="userRole" required>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeUserModal()">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Lưu người dùng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let allUsers = [];
+        let filteredUsers = [];
+        
+        function loadUsers() {
+            allUsers = getUsers();
+            filteredUsers = [...allUsers];
+            
+            updateStats();
+            renderUsers();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            document.getElementById('totalAdmins').textContent = allUsers.filter(u => u.role === 'admin').length;
+            document.getElementById('totalRegularUsers').textContent = allUsers.filter(u => u.role === 'user').length;
+        }
+        
+        function renderUsers() {
+            const currentUser = getCurrentUser();
+            const tbody = document.getElementById('usersTable');
+            
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không tìm thấy người dùng nào</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredUsers.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.fullname}</td>
+                    <td><a href="mailto:${user.email}">${user.email}</a></td>
+                    <td>${user.phone || '-'}</td>
+                    <td>
+                        <span class="badge ${user.role === 'admin' ? 'badge-danger' : 'badge-info'}">
+                            ${user.role === 'admin' ? 'Admin' : 'User'}
+                        </span>
+                    </td>
+                    <td>${formatDate(user.createdAt)}</td>
+                    <td>
+                        <div class="action-buttons">
+                            ${user.id !== currentUser.id ? `
+                                <button class="btn btn-primary btn-sm" onclick="editUser(${user.id})" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-warning btn-sm" onclick="changeRole(${user.id}, '${user.role}')" title="Đổi vai trò">
+                                    <i class="fas fa-user-cog"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="handleDeleteUser(${user.id})" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : '<span class="badge badge-info">Tài khoản hiện tại</span>'}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterUsers() {
+            const roleFilter = document.getElementById('roleFilter').value;
+            const searchTerm = document.getElementById('searchUser').value.toLowerCase();
+            
+            filteredUsers = allUsers.filter(user => {
+                const matchRole = !roleFilter || user.role === roleFilter;
+                const matchSearch = !searchTerm || 
+                    user.fullname.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm) ||
+                    (user.phone && user.phone.includes(searchTerm));
+                
+                return matchRole && matchSearch;
+            });
+            
+            renderUsers();
+        }
+        
+        function openAddUserModal() {
+            document.getElementById('userModalTitle').textContent = 'Thêm người dùng mới';
+            document.getElementById('userForm').reset();
+            document.getElementById('userId').value = '';
+            document.getElementById('userPassword').required = true;
+            document.getElementById('passwordHint').style.display = 'none';
+            document.getElementById('userModal').classList.add('active');
+        }
+        
+        function editUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!user) return;
+            
+            document.getElementById('userModalTitle').textContent = 'Chỉnh sửa người dùng';
+            document.getElementById('userId').value = user.id;
+            document.getElementById('userFullname').value = user.fullname;
+            document.getElementById('userEmail').value = user.email;
+            document.getElementById('userPhone').value = user.phone || '';
+            document.getElementById('userPassword').value = '';
+            document.getElementById('userPassword').required = false;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('passwordHint').style.display = 'block';
+            
+            document.getElementById('userModal').classList.add('active');
+        }
+        
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+        }
+        
+        function changeRole(userId, currentRole) {
+            const newRole = currentRole === 'admin' ? 'user' : 'admin';
+            if (confirm(`Đổi vai trò thành ${newRole === 'admin' ? 'Admin' : 'User'}?`)) {
+                if (updateUserRole(userId, newRole)) {
+                    loadUsers();
+                }
+            }
+        }
+        
+        function handleDeleteUser(userId) {
+            if (confirm('Xóa người dùng này? Hành động không thể hoàn tác!')) {
+                if (deleteUser(userId)) {
+                    loadUsers();
+                }
+            }
+        }
+        
+        // Save user
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('userId').value;
+            const fullname = document.getElementById('userFullname').value.trim();
+            const email = document.getElementById('userEmail').value.trim();
+            const phone = document.getElementById('userPhone').value.trim();
+            const password = document.getElementById('userPassword').value;
+            const role = document.getElementById('userRole').value;
+            
+            // Validation
+            if (fullname.length < 2) {
+                alert('Họ tên phải có ít nhất 2 ký tự');
+                return;
+            }
+            
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                alert('Email không hợp lệ');
+                return;
+            }
+            
+            if (!userId && password.length < 6) {
+                alert('Mật khẩu phải có ít nhất 6 ký tự');
+                return;
+            }
+            
+            const users = getUsers();
+            
+            if (userId) {
+                // Update existing user
+                const index = users.findIndex(u => u.id === parseInt(userId));
+                if (index !== -1) {
+                    users[index].fullname = fullname;
+                    users[index].email = email;
+                    users[index].phone = phone;
+                    users[index].role = role;
+                    if (password) {
+                        users[index].password = password;
+                    }
+                }
+            } else {
+                // Check if email exists
+                if (users.some(u => u.email === email)) {
+                    alert('Email đã tồn tại!');
+                    return;
+                }
+                
+                // Add new user
+                users.push({
+                    id: Date.now(),
+                    fullname,
+                    email,
+                    phone,
+                    password,
+                    role,
+                    createdAt: new Date().toISOString()
+                });
+            }
+            
+            saveUsers(users);
+            closeUserModal();
+            loadUsers();
+            alert(userId ? 'Đã cập nhật người dùng' : 'Đã thêm người dùng mới');
+        });
+        
+        // Export users to JSON
+        function exportUsersToJSON() {
+            const users = getUsers();
+            const dataStr = JSON.stringify(users, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'users.json';
+            link.click();
+            URL.revokeObjectURL(url);
+            alert('Đã xuất file users.json! Hãy copy nội dung vào thư mục data/');
+        }
+        
+        // Sync users with original
+        function syncUsersWithOriginal() {
+            if (confirm('Đồng bộ sẽ xóa tất cả thay đổi và load lại từ file JSON gốc. Bạn có chắc?')) {
+                localStorage.removeItem('users');
+                location.reload();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUsers();
+            
+            document.getElementById('addUserBtn').addEventListener('click', openAddUserModal);
+            document.getElementById('exportUsersBtn').addEventListener('click', exportUsersToJSON);
+            document.getElementById('syncUsersBtn').addEventListener('click', syncUsersWithOriginal);
+            document.getElementById('roleFilter').addEventListener('change', filterUsers);
+            document.getElementById('searchUser').addEventListener('input', filterUsers);
+        });
+    </script>
+</body>
+</html>

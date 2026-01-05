@@ -1,0 +1,13 @@
+{
+  "name": "livestock-website",
+  "version": "1.0.0",
+  "description": "Website Ky Thuat Chan Nuoi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["livestock", "farming", "agriculture"],
+  "author": "",
+  "license": "MIT"
+}

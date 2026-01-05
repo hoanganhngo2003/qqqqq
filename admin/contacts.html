@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Liên hệ</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../image/logo.png" alt="HA Farm Academy" class="admin-logo-img">
+                <span>HA Farm Academy</span>
+            </div>
+            <div class="admin-subtitle">Admin Panel</div>
+            <nav class="admin-nav">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="articles.html"><i class="fas fa-newspaper"></i> Bài viết</a>
+                <a href="users.html"><i class="fas fa-users"></i> Người dùng</a>
+                <a href="comments.html"><i class="fas fa-comments"></i> Bình luận</a>
+                <a href="questions.html"><i class="fas fa-question-circle"></i> Câu hỏi</a>
+                <a href="contacts.html" class="active"><i class="fas fa-envelope"></i> Liên hệ</a>
+                <a href="../index.html"><i class="fas fa-home"></i> Về trang chủ</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Quản lý Liên hệ</h1>
+                <div class="user-info">
+                    <span id="adminName">Admin</span>
+                    <a href="#" id="adminLogout" class="btn btn-outline btn-sm">Đăng xuất</a>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="admin-toolbar">
+                <div class="toolbar-left">
+                    <span class="stat-badge">
+                        <i class="fas fa-envelope"></i> Tổng: <strong id="totalContacts">0</strong>
+                    </span>
+                    <span class="stat-badge warning">
+                        <i class="fas fa-clock"></i> Chờ xử lý: <strong id="pendingContacts">0</strong>
+                    </span>
+                </div>
+                <div class="toolbar-right">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ xử lý</option>
+                        <option value="resolved">Đã xử lý</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Chủ đề</th>
+                            <th>Nội dung</th>
+                            <th>Ngày gửi</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsTable">
+                        <tr><td colspan="8" style="text-align: center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Contact Modal -->
+    <div class="modal" id="contactModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chi tiết liên hệ</h2>
+                <button class="modal-close" onclick="closeContactModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="contact-detail" id="contactDetail"></div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let allContacts = [];
+        let filteredContacts = [];
+        
+        function loadContacts() {
+            allContacts = getAllContacts().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            filteredContacts = [...allContacts];
+            
+            updateStats();
+            renderContacts();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalContacts').textContent = allContacts.length;
+            document.getElementById('pendingContacts').textContent = allContacts.filter(c => c.status === 'pending').length;
+        }
+        
+        function renderContacts() {
+            const tbody = document.getElementById('contactsTable');
+            
+            if (filteredContacts.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Không có liên hệ nào</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredContacts.map(contact => `
+                <tr>
+                    <td>${contact.id}</td>
+                    <td>${contact.name}</td>
+                    <td><a href="mailto:${contact.email}">${contact.email}</a></td>
+                    <td>${contact.subject || '-'}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${contact.message}
+                    </td>
+                    <td>${formatDate(contact.createdAt)}</td>
+                    <td>
+                        <span class="badge ${contact.status === 'pending' ? 'badge-warning' : 'badge-success'}">
+                            ${contact.status === 'pending' ? 'Chờ xử lý' : 'Đã xử lý'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="viewContact(${contact.id})" title="Xem chi tiết">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${contact.status === 'pending' ? `
+                                <button class="btn btn-success btn-sm" onclick="markAsResolved(${contact.id})" title="Đánh dấu đã xử lý">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-danger btn-sm" onclick="handleDeleteContact(${contact.id})" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterContacts() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            filteredContacts = allContacts.filter(contact => {
+                return !statusFilter || contact.status === statusFilter;
+            });
+            
+            renderContacts();
+        }
+        
+        function viewContact(contactId) {
+            const contact = allContacts.find(c => c.id === contactId);
+            if (!contact) return;
+            
+            const detailHTML = `
+                <div class="contact-info-detail">
+                    <div class="detail-row">
+                        <strong><i class="fas fa-user"></i> Họ tên:</strong>
+                        <span>${contact.name}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-envelope"></i> Email:</strong>
+                        <span><a href="mailto:${contact.email}">${contact.email}</a></span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-tag"></i> Chủ đề:</strong>
+                        <span>${contact.subject || 'Không có chủ đề'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-clock"></i> Thời gian:</strong>
+                        <span>${formatDate(contact.createdAt)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-info-circle"></i> Trạng thái:</strong>
+                        <span class="badge ${contact.status === 'pending' ? 'badge-warning' : 'badge-success'}">
+                            ${contact.status === 'pending' ? 'Chờ xử lý' : 'Đã xử lý'}
+                        </span>
+                    </div>
+                    <div class="detail-message">
+                        <strong><i class="fas fa-comment"></i> Nội dung:</strong>
+                        <p>${contact.message}</p>
+                    </div>
+                    <div class="detail-actions">
+                        ${contact.status === 'pending' ? `
+                            <button class="btn btn-success" onclick="markAsResolved(${contact.id}); closeContactModal();">
+                                <i class="fas fa-check"></i> Đánh dấu đã xử lý
+                            </button>
+                        ` : ''}
+                        <a href="mailto:${contact.email}?subject=Re: ${encodeURIComponent(contact.subject || 'Liên hệ')}" class="btn btn-primary">
+                            <i class="fas fa-reply"></i> Trả lời qua Email
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('contactDetail').innerHTML = detailHTML;
+            document.getElementById('contactModal').classList.add('active');
+        }
+        
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+        
+        function markAsResolved(contactId) {
+            if (updateContactStatus(contactId, 'resolved')) {
+                loadContacts();
+            }
+        }
+        
+        function handleDeleteContact(contactId) {
+            if (confirm('Xóa liên hệ này? Hành động không thể hoàn tác!')) {
+                if (deleteContact(contactId)) {
+                    loadContacts();
+                }
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContacts();
+            document.getElementById('statusFilter').addEventListener('change', filterContacts);
+        });
+    </script>
+</body>
+</html>

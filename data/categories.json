@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Kỹ thuật nuôi heo",
+    "slug": "ky-thuat-nuoi-heo",
+    "description": "Hướng dẫn kỹ thuật chăn nuôi heo từ cơ bản đến nâng cao",
+    "icon": "fas fa-piggy-bank",
+    "order": 1
+  },
+  {
+    "id": 2,
+    "name": "Kỹ thuật nuôi bò - trâu",
+    "slug": "ky-thuat-nuoi-bo-trau",
+    "description": "Kiến thức về chăn nuôi bò sữa, bò thịt và trâu",
+    "icon": "fas fa-cow",
+    "order": 2
+  },
+  {
+    "id": 3,
+    "name": "Kỹ thuật nuôi gà - vịt",
+    "slug": "ky-thuat-nuoi-ga-vit",
+    "description": "Hướng dẫn nuôi gà, vịt thịt và gà đẻ trứng",
+    "icon": "fas fa-egg",
+    "order": 3
+  },
+  {
+    "id": 4,
+    "name": "Kỹ thuật nuôi dê - cừu",
+    "slug": "ky-thuat-nuoi-de-cuu",
+    "description": "Kỹ thuật chăn nuôi dê và cừu hiệu quả",
+    "icon": "fas fa-horse-head",
+    "order": 4
+  },
+  {
+    "id": 5,
+    "name": "Kỹ thuật nuôi thủy sản",
+    "slug": "ky-thuat-nuoi-thuy-san",
+    "description": "Nuôi cá, tôm, và các loài thủy sản khác",
+    "icon": "fas fa-fish",
+    "order": 5
+  },
+  {
+    "id": 6,
+    "name": "Phòng và trị bệnh",
+    "slug": "phong-va-tri-benh",
+    "description": "Cách phòng ngừa và điều trị bệnh cho vật nuôi",
+    "icon": "fas fa-syringe",
+    "order": 6
+  }
+]

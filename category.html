@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Mục - Kỹ Thuật Chăn Nuôi</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html" class="active">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Trang chủ</a>
+            <span>/</span>
+            <span id="breadcrumbCategory">Danh mục</span>
+        </div>
+    </div>
+
+    <!-- Category Content -->
+    <section class="category-page">
+        <div class="container">
+            <div class="category-header-simple">
+                <div class="category-title-wrapper">
+                    <div class="category-icon-small" id="categoryIcon">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div>
+                        <h1 id="categoryTitle">Tất cả bài viết</h1>
+                        <p id="categoryDescription">Khám phá các bài viết về kỹ thuật chăn nuôi chuyên nghiệp</p>
+                    </div>
+                </div>
+                <div class="category-stats-inline">
+                    <div class="stat-badge">
+                        <i class="fas fa-newspaper"></i>
+                        <span id="totalArticles">0</span> bài viết
+                    </div>
+                    <div class="stat-badge">
+                        <i class="fas fa-eye"></i>
+                        <span id="totalViews">0</span> lượt xem
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="category-content">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-widget shine">
+                        <h3><i class="fas fa-folder-open"></i> Danh mục</h3>
+                        <ul class="category-list" id="sidebarCategories"></ul>
+                    </div>
+                    <div class="sidebar-widget shine">
+                        <h3><i class="fas fa-fire"></i> Bài viết nổi bật</h3>
+                        <div class="popular-articles" id="popularArticles"></div>
+                    </div>
+                    <div class="sidebar-widget sidebar-cta">
+                        <div class="cta-content">
+                            <i class="fas fa-lightbulb"></i>
+                            <h4>Có câu hỏi?</h4>
+                            <p>Đặt câu hỏi và nhận tư vấn từ chuyên gia</p>
+                            <a href="faq.html" class="btn btn-primary btn-sm">Hỏi ngay</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="main-content">
+                    <div class="filter-bar">
+                        <div class="filter-left">
+                            <div class="article-count-badge">
+                                <i class="fas fa-list"></i>
+                                <span id="articleCount">0 bài viết</span>
+                            </div>
+                        </div>
+                        <div class="filter-right">
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="list" title="Xem dạng danh sách">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button class="view-btn" data-view="grid" title="Xem dạng lưới">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                            </div>
+                            <select id="sortSelect" class="sort-select">
+                                <option value="latest">🕐 Mới nhất</option>
+                                <option value="popular">🔥 Phổ biến</option>
+                                <option value="oldest">📅 Cũ nhất</option>
+                                <option value="views">👁️ Nhiều lượt xem</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="articles-list" id="articlesList"></div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="emptyState" style="display: none;">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Không tìm thấy bài viết</h3>
+                        <p>Thử tìm kiếm với từ khóa khác hoặc chọn danh mục khác</p>
+                        <a href="index.html" class="btn btn-primary">Về trang chủ</a>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination"></div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Về chúng tôi</h3>
+                    <p>Website cung cấp kiến thức kỹ thuật chăn nuôi chuyên nghiệp.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@channuoi.vn</li>
+                        <li><i class="fas fa-phone"></i> 0123 456 789</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Theo dõi</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/article.js"></script>
+</body>
+</html>

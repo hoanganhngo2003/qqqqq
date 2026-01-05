@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Website cung cấp kiến thức kỹ thuật chăn nuôi gia súc, gia cầm, thủy sản chuyên nghiệp">
+    <meta name="keywords" content="chăn nuôi, kỹ thuật chăn nuôi, gia súc, gia cầm, thủy sản">
+    <title>Kỹ Thuật Chăn Nuôi - Trang Chủ</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="active">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <h2 class="section-title">Danh Mục Chăn Nuôi</h2>
+            <div class="categories-grid" id="categoriesGrid"></div>
+        </div>
+    </section>
+
+    <!-- Featured Articles -->
+    <section class="featured-section">
+        <div class="container">
+            <h2 class="section-title">Bài Viết Nổi Bật</h2>
+            <div class="articles-grid" id="featuredArticles"></div>
+        </div>
+    </section>
+
+    <!-- Latest Articles -->
+    <section class="latest-section">
+        <div class="container">
+            <h2 class="section-title">Bài Viết Mới Nhất</h2>
+            <div class="articles-list" id="latestArticles"></div>
+            <div class="text-center">
+                <a href="category.html" class="btn btn-primary">Xem tất cả bài viết</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Về chúng tôi</h3>
+                    <p>Website cung cấp kiến thức kỹ thuật chăn nuôi chuyên nghiệp, giúp người dân nâng cao hiệu quả sản xuất.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@channuoi.vn</li>
+                        <li><i class="fas fa-phone"></i> 0123 456 789</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Theo dõi</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả tìm kiếm - Kỹ Thuật Chăn Nuôi</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Trang chủ</a>
+            <span>/</span>
+            <span>Tìm kiếm</span>
+        </div>
+    </div>
+
+    <section class="search-page">
+        <div class="container">
+            <div class="search-header">
+                <h1>Kết quả tìm kiếm</h1>
+                <div class="search-info">
+                    <p>Tìm kiếm cho: <strong id="searchQuery"></strong></p>
+                    <p id="searchCount">Tìm thấy 0 kết quả</p>
+                </div>
+            </div>
+
+            <div class="search-filters">
+                <select id="categoryFilter">
+                    <option value="">Tất cả danh mục</option>
+                </select>
+                <select id="sortFilter">
+                    <option value="relevant">Liên quan nhất</option>
+                    <option value="latest">Mới nhất</option>
+                    <option value="popular">Phổ biến nhất</option>
+                </select>
+            </div>
+
+            <div class="search-results" id="searchResults">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Get search query from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q') || '';
+        
+        document.getElementById('searchQuery').textContent = query;
+        document.getElementById('searchInput').value = query;
+
+        // Perform search
+        async function performSearch() {
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!query) {
+                resultsDiv.innerHTML = '<p style="text-align: center; padding: 40px;">Vui lòng nhập từ khóa tìm kiếm</p>';
+                return;
+            }
+
+            try {
+                let articles = [];
+                
+                // Check localStorage first (for admin updates)
+                const localArticles = localStorage.getItem('articles');
+                if (localArticles) {
+                    articles = JSON.parse(localArticles);
+                } else {
+                    // Load from JSON if no localStorage
+                    const response = await fetch('data/articles.json');
+                    articles = await response.json();
+                }
+                
+                const searchLower = query.toLowerCase();
+                const results = articles.filter(article => {
+                    const titleMatch = article.title?.toLowerCase().includes(searchLower);
+                    const excerptMatch = article.excerpt?.toLowerCase().includes(searchLower);
+                    const contentMatch = article.content?.toLowerCase().includes(searchLower);
+                    const tagsMatch = article.tags?.some(tag => tag.toLowerCase().includes(searchLower));
+                    const authorMatch = article.author?.toLowerCase().includes(searchLower);
+                    
+                    return titleMatch || excerptMatch || contentMatch || tagsMatch || authorMatch;
+                });
+
+                allResults = results;
+                document.getElementById('searchCount').textContent = `Tìm thấy ${results.length} kết quả`;
+
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-search" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+                            <h3>Không tìm thấy kết quả</h3>
+                            <p style="color: var(--text-light); margin: 20px 0;">Thử tìm kiếm với từ khóa khác hoặc <a href="category.html">xem tất cả bài viết</a></p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = results.map(article => {
+                        const date = new Date(article.publishedAt).toLocaleDateString('vi-VN');
+                        return `
+                            <a href="article.html?id=${article.id}" class="article-item">
+                                <div class="article-item-image">
+                                    <img src="${article.image}" alt="${article.title}">
+                                </div>
+                                <div class="article-item-content">
+                                    <div class="article-card-meta">
+                                        <span><i class="fas fa-calendar"></i> ${date}</span>
+                                        <span><i class="fas fa-eye"></i> ${article.views} lượt xem</span>
+                                        <span><i class="fas fa-user"></i> ${article.author}</span>
+                                    </div>
+                                    <h3>${article.title}</h3>
+                                    <p>${article.excerpt}</p>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error searching:', error);
+                resultsDiv.innerHTML = '<p style="text-align: center; color: red;">Có lỗi xảy ra khi tìm kiếm</p>';
+            }
+        }
+
+        // Load categories for filter
+        async function loadCategories() {
+            try {
+                const response = await fetch('data/categories.json');
+                const categories = await response.json();
+                
+                const categoryFilter = document.getElementById('categoryFilter');
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = cat.name;
+                    categoryFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+            }
+        }
+
+        // Apply filters and sorting
+        let allResults = [];
+        
+        async function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            const resultsDiv = document.getElementById('searchResults');
+            
+            let filtered = [...allResults];
+            
+            // Filter by category
+            if (categoryFilter) {
+                filtered = filtered.filter(article => article.categoryId == categoryFilter);
+            }
+            
+            // Sort results
+            if (sortFilter === 'latest') {
+                filtered.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+            } else if (sortFilter === 'popular') {
+                filtered.sort((a, b) => (b.views || 0) - (a.views || 0));
+            }
+            
+            // Update count
+            document.getElementById('searchCount').textContent = `Tìm thấy ${filtered.length} kết quả`;
+            
+            // Display results
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <i class="fas fa-search" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+                        <h3>Không tìm thấy kết quả</h3>
+                        <p style="color: var(--text-light); margin: 20px 0;">Thử tìm kiếm với từ khóa khác hoặc <a href="category.html">xem tất cả bài viết</a></p>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = filtered.map(article => {
+                    const date = new Date(article.publishedAt).toLocaleDateString('vi-VN');
+                    return `
+                        <a href="article.html?id=${article.id}" class="article-item">
+                            <div class="article-item-image">
+                                <img src="${article.image}" alt="${article.title}">
+                            </div>
+                            <div class="article-item-content">
+                                <div class="article-card-meta">
+                                    <span><i class="fas fa-calendar"></i> ${date}</span>
+                                    <span><i class="fas fa-eye"></i> ${article.views} lượt xem</span>
+                                    <span><i class="fas fa-user"></i> ${article.author}</span>
+                                </div>
+                                <h3>${article.title}</h3>
+                                <p>${article.excerpt}</p>
+                            </div>
+                        </a>
+                    `;
+                }).join('');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            performSearch();
+            loadCategories();
+            
+            // Add filter event listeners
+            document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+            document.getElementById('sortFilter').addEventListener('change', applyFilters);
+        });
+    </script>
+
+    <style>
+        .search-page {
+            padding: var(--spacing-xl) 0;
+            min-height: 60vh;
+        }
+        .search-header {
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        .search-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+        }
+        .search-info {
+            color: var(--text-light);
+        }
+        .search-info strong {
+            color: var(--primary-color);
+        }
+        .search-filters {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-xl);
+            justify-content: center;
+        }
+        .search-filters select {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+        .search-results {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: var(--text-light);
+        }
+    </style>
+</body>
+</html>

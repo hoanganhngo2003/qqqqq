@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "fullname": "Admin",
+    "email": "admin@channuoi.vn",
+    "password": "admin123",
+    "phone": "0123456789",
+    "role": "admin",
+    "createdAt": "2024-01-01T00:00:00Z"
+  }
+]

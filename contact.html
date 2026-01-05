@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ - Kỹ Thuật Chăn Nuôi</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html" class="active">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="breadcrumb">
+        <div class="container">
+            <a href="index.html">Trang chủ</a>
+            <span>/</span>
+            <span>Liên hệ</span>
+        </div>
+    </div>
+
+    <section class="contact-page">
+        <div class="container">
+            <div class="contact-header">
+                <div class="contact-header-icon">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h1>Liên hệ với chúng tôi</h1>
+                <p>Gửi câu hỏi, góp ý hoặc yêu cầu hỗ trợ. Chúng tôi sẽ phản hồi trong vòng 24 giờ!</p>
+            </div>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="info-card shine">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Email</h3>
+                        <p>info@channuoi.vn</p>
+                        <a href="mailto:info@channuoi.vn" class="info-link">Gửi email <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="info-card shine">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3>Điện thoại</h3>
+                        <p>0123 456 789</p>
+                        <a href="tel:0123456789" class="info-link">Gọi ngay <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="info-card shine">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Địa chỉ</h3>
+                        <p>Hà Nội, Việt Nam</p>
+                        <a href="#" class="info-link">Xem bản đồ <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="info-card shine">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Giờ làm việc</h3>
+                        <p>T2 - T6: 8:00 - 17:00</p>
+                        <p style="font-size: 0.85rem; margin-top: 4px;">T7: 8:00 - 12:00</p>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <div class="form-header">
+                        <h2>Gửi tin nhắn cho chúng tôi</h2>
+                        <p>Điền thông tin bên dưới và chúng tôi sẽ liên hệ lại sớm nhất</p>
+                    </div>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name"><i class="fas fa-user"></i> Họ và tên *</label>
+                                <input type="text" id="name" placeholder="Nhập họ và tên của bạn" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><i class="fas fa-envelope"></i> Email *</label>
+                                <input type="email" id="email" placeholder="example@email.com" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone"><i class="fas fa-phone"></i> Số điện thoại</label>
+                                <input type="tel" id="phone" placeholder="0123 456 789">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject"><i class="fas fa-tag"></i> Chủ đề</label>
+                                <select id="subject">
+                                    <option value="">Chọn chủ đề</option>
+                                    <option value="question">Câu hỏi chung</option>
+                                    <option value="support">Yêu cầu hỗ trợ</option>
+                                    <option value="feedback">Góp ý</option>
+                                    <option value="cooperation">Hợp tác</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="message"><i class="fas fa-comment-dots"></i> Nội dung *</label>
+                            <textarea id="message" rows="6" placeholder="Nhập nội dung tin nhắn của bạn..." required></textarea>
+                        </div>
+                        <div class="alert" id="contactAlert" style="display: none;"></div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">
+                            <i class="fas fa-paper-plane"></i> Gửi tin nhắn
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ Quick Links -->
+            <div class="contact-faq">
+                <h2>Câu hỏi thường gặp</h2>
+                <p>Có thể câu trả lời bạn cần đã có sẵn</p>
+                <div class="faq-links">
+                    <a href="faq.html" class="faq-link-card">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Xem câu hỏi thường gặp</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="category.html" class="faq-link-card">
+                        <i class="fas fa-book-open"></i>
+                        <span>Tìm kiếm bài viết</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="contact-social">
+                <h3>Kết nối với chúng tôi</h3>
+                <div class="social-links-large">
+                    <a href="#" class="social-link facebook">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="social-link youtube">
+                        <i class="fab fa-youtube"></i>
+                        <span>YouTube</span>
+                    </a>
+                    <a href="#" class="social-link zalo">
+                        <i class="fas fa-comment"></i>
+                        <span>Zalo</span>
+                    </a>
+                    <a href="#" class="social-link telegram">
+                        <i class="fab fa-telegram-plane"></i>
+                        <span>Telegram</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Về chúng tôi</h3>
+                    <p>Website cung cấp kiến thức kỹ thuật chăn nuôi chuyên nghiệp.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+
+    <script>
+        // Auto-fill if logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                document.getElementById('name').value = currentUser.fullname;
+                document.getElementById('email').value = currentUser.email;
+            }
+        });
+
+        // Form validation and submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Validation
+            if (name.length < 2) {
+                showAlert('error', 'Vui lòng nhập họ tên hợp lệ (ít nhất 2 ký tự)');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showAlert('error', 'Vui lòng nhập email hợp lệ');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+            
+            if (message.length < 10) {
+                showAlert('error', 'Nội dung tin nhắn quá ngắn (ít nhất 10 ký tự)');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                return;
+            }
+            
+            // Simulate sending delay
+            setTimeout(() => {
+                // Get existing contacts
+                const contactsStr = localStorage.getItem('contacts');
+                const contacts = contactsStr ? JSON.parse(contactsStr) : [];
+                
+                // Add new contact
+                const newContact = {
+                    id: Date.now(),
+                    name,
+                    email,
+                    subject: subject || 'Không có chủ đề',
+                    message,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                
+                contacts.push(newContact);
+                localStorage.setItem('contacts', JSON.stringify(contacts));
+                
+                // Show success message
+                showAlert('success', '✓ Tin nhắn đã được gửi thành công! Chúng tôi sẽ phản hồi trong vòng 24h.');
+                
+                // Reset form
+                this.reset();
+                
+                // Re-fill user info if logged in
+                const currentUser = getCurrentUser();
+                if (currentUser) {
+                    document.getElementById('name').value = currentUser.fullname;
+                    document.getElementById('email').value = currentUser.email;
+                }
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+                // Scroll to alert
+                document.getElementById('contactAlert').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 1000);
+        });
+        
+        // Email validation
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        // Show alert
+        function showAlert(type, message) {
+            const alertDiv = document.getElementById('contactAlert');
+            alertDiv.style.display = 'block';
+            alertDiv.className = 'alert alert-' + type;
+            alertDiv.innerHTML = message;
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Character counter for message
+        const messageTextarea = document.getElementById('message');
+        const charCounter = document.createElement('small');
+        charCounter.className = 'char-counter';
+        charCounter.style.cssText = 'display: block; text-align: right; color: var(--text-light); margin-top: 4px;';
+        messageTextarea.parentElement.appendChild(charCounter);
+        
+        messageTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            charCounter.textContent = `${length} ký tự`;
+            
+            if (length < 10) {
+                charCounter.style.color = 'var(--error-color)';
+            } else {
+                charCounter.style.color = 'var(--success-color)';
+            }
+        });
+    </script>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Câu hỏi thường gặp - Kỹ Thuật Chăn Nuôi</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="faq.html" class="active">FAQ</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="faq-hero">
+        <div class="container">
+            <h1>Câu hỏi thường gặp</h1>
+            <p>Tìm câu trả lời cho các thắc mắc phổ biến</p>
+        </div>
+    </section>
+
+    <section class="faq-content">
+        <div class="container">
+            <div class="faq-categories">
+                <button class="faq-cat-btn active" data-category="all">Tất cả</button>
+                <button class="faq-cat-btn" data-category="account">Tài khoản</button>
+                <button class="faq-cat-btn" data-category="content">Nội dung</button>
+                <button class="faq-cat-btn" data-category="technical">Kỹ thuật</button>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question">
+                        <h3>Làm thế nào để đăng ký tài khoản?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Bạn có thể đăng ký tài khoản bằng cách:</p>
+                        <ol>
+                            <li>Click vào nút "Đăng ký" ở góc phải header</li>
+                            <li>Điền đầy đủ thông tin: Họ tên, Email, Mật khẩu</li>
+                            <li>Đồng ý với điều khoản sử dụng</li>
+                            <li>Click "Đăng ký" để hoàn tất</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question">
+                        <h3>Tôi quên mật khẩu, phải làm sao?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Hiện tại website đang ở chế độ demo nên chưa có tính năng quên mật khẩu. Bạn có thể:</p>
+                        <ul>
+                            <li>Đăng ký tài khoản mới</li>
+                            <li>Liên hệ với admin qua trang Liên hệ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="content">
+                    <div class="faq-question">
+                        <h3>Làm thế nào để lưu bài viết yêu thích?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Để lưu bài viết yêu thích:</p>
+                        <ol>
+                            <li>Đăng nhập vào tài khoản</li>
+                            <li>Vào bài viết muốn lưu</li>
+                            <li>Click nút "Lưu" (icon bookmark) bên dưới tiêu đề</li>
+                            <li>Xem lại tại: Trang cá nhân → Bài viết đã lưu</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="content">
+                    <div class="faq-question">
+                        <h3>Tôi có thể bình luận bài viết không?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Có, bạn cần đăng nhập để bình luận. Bình luận sẽ được admin duyệt trước khi hiển thị công khai.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="content">
+                    <div class="faq-question">
+                        <h3>Làm thế nào để đặt câu hỏi cho chuyên gia?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Để đặt câu hỏi:</p>
+                        <ol>
+                            <li>Đăng nhập vào tài khoản</li>
+                            <li>Vào Trang cá nhân → Câu hỏi của tôi</li>
+                            <li>Click "Đặt câu hỏi mới"</li>
+                            <li>Điền thông tin và gửi</li>
+                            <li>Chờ chuyên gia trả lời</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question">
+                        <h3>Website có hỗ trợ trên điện thoại không?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Có, website được thiết kế responsive, hoạt động tốt trên mọi thiết bị: điện thoại, tablet và máy tính.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question">
+                        <h3>Tại sao tôi không thấy bình luận của mình?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Bình luận cần được admin duyệt trước khi hiển thị. Bạn có thể xem trạng thái bình luận tại: Trang cá nhân → Bình luận.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="content">
+                    <div class="faq-question">
+                        <h3>Làm thế nào để tìm kiếm bài viết?</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Bạn có thể tìm kiếm bằng cách:</p>
+                        <ul>
+                            <li>Sử dụng ô tìm kiếm ở header</li>
+                            <li>Nhập từ khóa và nhấn Enter hoặc click icon tìm kiếm</li>
+                            <li>Lọc theo danh mục tại trang Danh mục</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-cta">
+                <h2>Không tìm thấy câu trả lời?</h2>
+                <p>Liên hệ với chúng tôi để được hỗ trợ</p>
+                <a href="contact.html" class="btn btn-primary">Liên hệ ngay</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const item = this.parentElement;
+                const isActive = item.classList.contains('active');
+                
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                
+                // Open clicked if it wasn't active
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Category filter
+        document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // Update active button
+                document.querySelectorAll('.faq-cat-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Filter items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+    <style>
+        .faq-hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .faq-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .faq-content {
+            padding: 60px 0;
+        }
+        .faq-categories {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .faq-cat-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .faq-cat-btn:hover,
+        .faq-cat-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .faq-question:hover {
+            background: var(--bg-light);
+        }
+        .faq-question h3 {
+            margin: 0;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+        .faq-question i {
+            color: var(--primary-color);
+            transition: transform 0.3s;
+        }
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+        .faq-answer p,
+        .faq-answer ul,
+        .faq-answer ol {
+            padding: 0 20px 20px;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+        .faq-answer ul,
+        .faq-answer ol {
+            padding-left: 40px;
+        }
+        .faq-answer li {
+            margin-bottom: 8px;
+        }
+        .faq-cta {
+            text-align: center;
+            margin-top: 60px;
+            padding: 40px;
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+        }
+        .faq-cta h2 {
+            margin-bottom: 10px;
+        }
+        .faq-cta p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bình luận</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../image/logo.png" alt="HA Farm Academy" class="admin-logo-img">
+                <span>HA Farm Academy</span>
+            </div>
+            <div class="admin-subtitle">Admin Panel</div>
+            <nav class="admin-nav">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="articles.html"><i class="fas fa-newspaper"></i> Bài viết</a>
+                <a href="users.html"><i class="fas fa-users"></i> Người dùng</a>
+                <a href="comments.html" class="active"><i class="fas fa-comments"></i> Bình luận</a>
+                <a href="questions.html"><i class="fas fa-question-circle"></i> Câu hỏi</a>
+                <a href="contacts.html"><i class="fas fa-envelope"></i> Liên hệ</a>
+                <a href="../index.html"><i class="fas fa-home"></i> Về trang chủ</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Quản lý Bình luận</h1>
+                <div class="user-info">
+                    <span id="adminName">Admin</span>
+                    <a href="#" id="adminLogout" class="btn btn-outline btn-sm">Đăng xuất</a>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="admin-toolbar">
+                <div class="toolbar-left">
+                    <span class="stat-badge">
+                        <i class="fas fa-comments"></i> Tổng: <strong id="totalComments">0</strong>
+                    </span>
+                    <span class="stat-badge warning">
+                        <i class="fas fa-clock"></i> Chờ duyệt: <strong id="pendingComments">0</strong>
+                    </span>
+                    <span class="stat-badge" style="background: #d4edda; color: #155724;">
+                        <i class="fas fa-check"></i> Đã duyệt: <strong id="approvedComments">0</strong>
+                    </span>
+                </div>
+                <div class="toolbar-right">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ duyệt</option>
+                        <option value="approved">Đã duyệt</option>
+                    </select>
+                    <input type="text" id="searchComment" placeholder="Tìm kiếm bình luận..." class="search-input">
+                </div>
+            </div>
+
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người dùng</th>
+                            <th>Bài viết</th>
+                            <th>Nội dung</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="commentsTable">
+                        <tr><td colspan="7" style="text-align: center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- View Comment Modal -->
+    <div class="modal" id="commentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Chi tiết bình luận</h2>
+                <button class="modal-close" onclick="closeCommentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="comment-detail" id="commentDetail"></div>
+        </div>
+    </div>
+
+    <!-- Reply Comment Modal -->
+    <div class="modal" id="replyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Trả lời bình luận</h2>
+                <button class="modal-close" onclick="closeReplyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="replyForm" class="admin-form">
+                <input type="hidden" id="replyCommentId">
+                
+                <div class="form-group">
+                    <label>Bình luận gốc:</label>
+                    <div class="original-comment" id="originalComment"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="replyText">Nội dung trả lời *</label>
+                    <textarea id="replyText" required placeholder="Nhập nội dung trả lời..." rows="5"></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Gửi trả lời
+                    </button>
+                    <button type="button" class="btn btn-outline" onclick="closeReplyModal()">
+                        Hủy
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let articles = [];
+        let allComments = [];
+        let filteredComments = [];
+        
+        async function loadComments() {
+            try {
+                // Load articles from localStorage first
+                const localArticles = localStorage.getItem('articles');
+                if (localArticles) {
+                    articles = JSON.parse(localArticles);
+                } else {
+                    const articlesRes = await fetch('../data/articles.json');
+                    articles = await articlesRes.json();
+                }
+                
+                allComments = getAllComments().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                filteredComments = [...allComments];
+                
+                updateStats();
+                renderComments();
+            } catch (error) {
+                console.error('Error loading comments:', error);
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('totalComments').textContent = allComments.length;
+            document.getElementById('pendingComments').textContent = allComments.filter(c => !c.approved).length;
+            document.getElementById('approvedComments').textContent = allComments.filter(c => c.approved).length;
+        }
+        
+        function renderComments() {
+            const tbody = document.getElementById('commentsTable');
+            
+            if (filteredComments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không có bình luận nào</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredComments.map(comment => {
+                const article = articles.find(a => a.id === comment.articleId);
+                const articleTitle = article ? article.title : 'Không tìm thấy';
+                
+                return `
+                    <tr>
+                        <td>${comment.id}</td>
+                        <td>${comment.userName}</td>
+                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            <a href="../article.html?id=${comment.articleId}" target="_blank" title="${articleTitle}">
+                                ${articleTitle}
+                            </a>
+                        </td>
+                        <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${comment.text}
+                        </td>
+                        <td>${formatDate(comment.createdAt)}</td>
+                        <td>
+                            <span class="badge ${comment.approved ? 'badge-success' : 'badge-warning'}">
+                                ${comment.approved ? 'Đã duyệt' : 'Chờ duyệt'}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-primary btn-sm" onclick="viewComment(${comment.id})" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="replyComment(${comment.id})" title="Trả lời">
+                                    <i class="fas fa-reply"></i>
+                                </button>
+                                ${!comment.approved ? `
+                                    <button class="btn btn-success btn-sm" onclick="handleApprove(${comment.id})" title="Duyệt">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-warning btn-sm" onclick="handleUnapprove(${comment.id})" title="Bỏ duyệt">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                `}
+                                <button class="btn btn-danger btn-sm" onclick="handleDelete(${comment.id})" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function filterComments() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchComment').value.toLowerCase();
+            
+            filteredComments = allComments.filter(comment => {
+                const matchStatus = !statusFilter || 
+                    (statusFilter === 'pending' && !comment.approved) ||
+                    (statusFilter === 'approved' && comment.approved);
+                
+                const matchSearch = !searchTerm || 
+                    comment.text.toLowerCase().includes(searchTerm) ||
+                    comment.userName.toLowerCase().includes(searchTerm);
+                
+                return matchStatus && matchSearch;
+            });
+            
+            renderComments();
+        }
+        
+        function viewComment(commentId) {
+            const comment = allComments.find(c => c.id === commentId);
+            if (!comment) return;
+            
+            const article = articles.find(a => a.id === comment.articleId);
+            const articleTitle = article ? article.title : 'Không tìm thấy';
+            
+            const detailHTML = `
+                <div class="contact-info-detail">
+                    <div class="detail-row">
+                        <strong><i class="fas fa-user"></i> Người dùng:</strong>
+                        <span>${comment.userName}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-newspaper"></i> Bài viết:</strong>
+                        <span>
+                            <a href="../article.html?id=${comment.articleId}" target="_blank">
+                                ${articleTitle}
+                            </a>
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-clock"></i> Thời gian:</strong>
+                        <span>${formatDate(comment.createdAt)}</span>
+                    </div>
+                    <div class="detail-row">
+                        <strong><i class="fas fa-info-circle"></i> Trạng thái:</strong>
+                        <span class="badge ${comment.approved ? 'badge-success' : 'badge-warning'}">
+                            ${comment.approved ? 'Đã duyệt' : 'Chờ duyệt'}
+                        </span>
+                    </div>
+                    <div class="detail-message">
+                        <strong><i class="fas fa-comment"></i> Nội dung bình luận:</strong>
+                        <p>${comment.text}</p>
+                    </div>
+                    <div class="detail-actions">
+                        ${!comment.approved ? `
+                            <button class="btn btn-success" onclick="handleApprove(${comment.id}); closeCommentModal();">
+                                <i class="fas fa-check"></i> Duyệt bình luận
+                            </button>
+                        ` : `
+                            <button class="btn btn-warning" onclick="handleUnapprove(${comment.id}); closeCommentModal();">
+                                <i class="fas fa-times"></i> Bỏ duyệt
+                            </button>
+                        `}
+                        <button class="btn btn-danger" onclick="handleDelete(${comment.id}); closeCommentModal();">
+                            <i class="fas fa-trash"></i> Xóa bình luận
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('commentDetail').innerHTML = detailHTML;
+            document.getElementById('commentModal').classList.add('active');
+        }
+        
+        function closeCommentModal() {
+            document.getElementById('commentModal').classList.remove('active');
+        }
+        
+        // Reply to comment
+        function replyComment(commentId) {
+            const comment = allComments.find(c => c.id === commentId);
+            if (!comment) return;
+            
+            const article = articles.find(a => a.id === comment.articleId);
+            const articleTitle = article ? article.title : 'Không tìm thấy';
+            
+            document.getElementById('replyCommentId').value = commentId;
+            document.getElementById('originalComment').innerHTML = `
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 3px solid var(--primary-color);">
+                    <div style="margin-bottom: 8px;">
+                        <strong>${comment.userName}</strong> - 
+                        <small>${formatDate(comment.createdAt)}</small>
+                    </div>
+                    <div style="color: #666;">
+                        Bài viết: <a href="../article.html?id=${comment.articleId}" target="_blank">${articleTitle}</a>
+                    </div>
+                    <div style="margin-top: 8px;">
+                        ${comment.text}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('replyText').value = '';
+            document.getElementById('replyModal').classList.add('active');
+        }
+        
+        function closeReplyModal() {
+            document.getElementById('replyModal').classList.remove('active');
+        }
+        
+        function handleApprove(commentId) {
+            if (approveComment(commentId)) {
+                loadComments();
+            }
+        }
+        
+        function handleUnapprove(commentId) {
+            const comments = getAllComments();
+            const comment = comments.find(c => c.id === commentId);
+            if (comment) {
+                comment.approved = false;
+                saveComments(comments);
+                loadComments();
+            }
+        }
+        
+        function handleDelete(commentId) {
+            if (confirm('Xóa bình luận này? Hành động không thể hoàn tác!')) {
+                if (deleteComment(commentId)) {
+                    loadComments();
+                }
+            }
+        }
+        
+        // Bulk actions
+        function approveAll() {
+            if (confirm('Duyệt tất cả bình luận chờ duyệt?')) {
+                const comments = getAllComments();
+                comments.forEach(c => c.approved = true);
+                saveComments(comments);
+                loadComments();
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComments();
+            
+            document.getElementById('statusFilter').addEventListener('change', filterComments);
+            document.getElementById('searchComment').addEventListener('input', filterComments);
+            
+            // Handle reply form submission
+            const replyForm = document.getElementById('replyForm');
+            if (replyForm) {
+                replyForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const commentId = parseInt(document.getElementById('replyCommentId').value);
+                    const replyText = document.getElementById('replyText').value.trim();
+                    
+                    if (!replyText) {
+                        alert('Vui lòng nhập nội dung trả lời!');
+                        return;
+                    }
+                    
+                    const originalComment = allComments.find(c => c.id === commentId);
+                    if (!originalComment) {
+                        alert('Không tìm thấy bình luận gốc!');
+                        return;
+                    }
+                    
+                    // Get current admin user
+                    const currentUser = getCurrentUser();
+                    const adminName = currentUser ? currentUser.fullname : 'Admin';
+                    
+                    // Create reply comment
+                    const comments = getAllComments();
+                    const newReply = {
+                        id: comments.length > 0 ? Math.max(...comments.map(c => c.id)) + 1 : 1,
+                        articleId: originalComment.articleId,
+                        userId: currentUser ? currentUser.id : 1,
+                        userName: adminName,
+                        text: replyText,
+                        approved: true, // Admin replies are auto-approved
+                        createdAt: new Date().toISOString(),
+                        isAdminReply: true,
+                        replyTo: commentId
+                    };
+                    
+                    comments.push(newReply);
+                    saveComments(comments);
+                    
+                    alert('Đã gửi trả lời thành công!');
+                    closeReplyModal();
+                    loadComments();
+                });
+            }
+        });
+    </script>
+    
+    <style>
+        .original-comment {
+            margin-top: 8px;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+        }
+    </style>
+</body>
+</html>

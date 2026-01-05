@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị - Dashboard</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../image/logo.png" alt="HA Farm Academy" class="admin-logo-img">
+                <span>HA Farm Academy</span>
+            </div>
+            <div class="admin-subtitle">Admin Panel</div>
+            <nav class="admin-nav">
+                <a href="dashboard.html" class="active">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="articles.html">
+                    <i class="fas fa-newspaper"></i> Bài viết
+                </a>
+                <a href="users.html">
+                    <i class="fas fa-users"></i> Người dùng
+                </a>
+                <a href="comments.html">
+                    <i class="fas fa-comments"></i> Bình luận
+                </a>
+                <a href="questions.html">
+                    <i class="fas fa-question-circle"></i> Câu hỏi
+                </a>
+                <a href="contacts.html">
+                    <i class="fas fa-envelope"></i> Liên hệ
+                </a>
+                <a href="../index.html">
+                    <i class="fas fa-home"></i> Về trang chủ
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <span id="adminName">Admin</span>
+                    <a href="#" id="adminLogout" class="btn btn-outline btn-sm">Đăng xuất</a>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-newspaper"></i>
+                    <h3 id="totalArticles">0</h3>
+                    <p>Tổng bài viết</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3 id="totalUsers">0</h3>
+                    <p>Người dùng</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-comments"></i>
+                    <h3 id="totalComments">0</h3>
+                    <p>Bình luận</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3 id="pendingContacts">0</h3>
+                    <p>Liên hệ chờ xử lý</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <a href="articles.html" class="quick-action-card">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Quản lý bài viết</span>
+                </a>
+                <a href="users.html" class="quick-action-card">
+                    <i class="fas fa-users"></i>
+                    <span>Quản lý người dùng</span>
+                </a>
+                <a href="comments.html" class="quick-action-card">
+                    <i class="fas fa-comments"></i>
+                    <span>Duyệt bình luận</span>
+                </a>
+                <a href="contacts.html" class="quick-action-card">
+                    <i class="fas fa-envelope"></i>
+                    <span>Xử lý liên hệ</span>
+                </a>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="data-table">
+                <h2 style="padding: 16px;">Hoạt động gần đây</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loại</th>
+                            <th>Nội dung</th>
+                            <th>Người dùng</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentActivity">
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Đang tải...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        // Check admin access
+        if (!isAdmin()) {
+            alert('Bạn không có quyền truy cập trang này');
+            window.location.href = '../index.html';
+        }
+
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                document.getElementById('adminName').textContent = currentUser.fullname;
+            }
+            
+            document.getElementById('adminLogout').addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+        });
+
+        async function loadDashboardStats() {
+            try {
+                // Load articles
+                let articles = [];
+                const localArticles = localStorage.getItem('articles');
+                if (localArticles) {
+                    articles = JSON.parse(localArticles);
+                } else {
+                    const articlesRes = await fetch('../data/articles.json');
+                    articles = await articlesRes.json();
+                }
+                document.getElementById('totalArticles').textContent = articles.length;
+                
+                // Load users
+                const users = getUsers();
+                document.getElementById('totalUsers').textContent = users.length;
+                
+                // Load comments
+                const commentsStr = localStorage.getItem('comments');
+                const comments = commentsStr ? JSON.parse(commentsStr) : [];
+                document.getElementById('totalComments').textContent = comments.length;
+                
+                // Load contacts
+                const contactsStr = localStorage.getItem('contacts');
+                const contacts = contactsStr ? JSON.parse(contactsStr) : [];
+                const pending = contacts.filter(c => c.status === 'pending');
+                document.getElementById('pendingContacts').textContent = pending.length;
+                
+                // Load recent activity
+                loadRecentActivity(comments, contacts);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        function loadRecentActivity(comments, contacts) {
+            const activity = [];
+            
+            // Add recent comments
+            comments.slice(-5).reverse().forEach(comment => {
+                activity.push({
+                    type: 'Bình luận',
+                    content: comment.text.substring(0, 50) + '...',
+                    user: comment.userName,
+                    time: new Date(comment.createdAt).toLocaleString('vi-VN'),
+                    status: comment.approved ? 'Đã duyệt' : 'Chờ duyệt'
+                });
+            });
+            
+            // Add recent contacts
+            contacts.slice(-5).reverse().forEach(contact => {
+                activity.push({
+                    type: 'Liên hệ',
+                    content: contact.subject || contact.message.substring(0, 50) + '...',
+                    user: contact.name,
+                    time: new Date(contact.createdAt).toLocaleString('vi-VN'),
+                    status: contact.status === 'pending' ? 'Chờ xử lý' : 'Đã xử lý'
+                });
+            });
+            
+            // Sort by time
+            activity.sort((a, b) => new Date(b.time) - new Date(a.time));
+            
+            const tbody = document.getElementById('recentActivity');
+            if (activity.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Chưa có hoạt động nào</td></tr>';
+            } else {
+                tbody.innerHTML = activity.slice(0, 10).map(item => `
+                    <tr>
+                        <td>${item.type}</td>
+                        <td>${item.content}</td>
+                        <td>${item.user}</td>
+                        <td>${item.time}</td>
+                        <td><span class="badge ${item.status.includes('Chờ') ? 'badge-warning' : 'badge-success'}">${item.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>

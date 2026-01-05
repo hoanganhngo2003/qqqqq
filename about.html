@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về chúng tôi - Kỹ Thuật Chăn Nuôi</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="image/logo.png" alt="HA Farm Academy" class="logo-img">
+                    <span>HA Farm Academy</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html" class="active">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Tìm kiếm...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="auth-buttons" id="authButtons">
+                        <a href="login.html" class="btn btn-outline">Đăng nhập</a>
+                        <a href="register.html" class="btn btn-primary">Đăng ký</a>
+                    </div>
+                    <div class="user-menu" id="userMenu" style="display: none;">
+                        <button class="user-info-btn" id="userInfoBtn">
+                            <div class="user-avatar-img" id="userAvatarImg">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="user-name" id="userName">User</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="user-dropdown">
+                            <a href="profile.html"><i class="fas fa-user"></i> Trang cá nhân</a>
+                            <a href="profile.html#bookmarks"><i class="fas fa-bookmark"></i> Bài viết đã lưu</a>
+                            <a href="profile.html#questions"><i class="fas fa-question-circle"></i> Câu hỏi của tôi</a>
+                            <a href="admin/dashboard.html" id="adminLink" style="display: none;"><i class="fas fa-cog"></i> Quản trị</a>
+                            <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>Về Kỹ Thuật Chăn Nuôi</h1>
+            <p>Nền tảng chia sẻ kiến thức chăn nuôi hàng đầu Việt Nam</p>
+        </div>
+    </section>
+
+    <section class="about-content">
+        <div class="container">
+            <div class="about-section">
+                <div class="about-text">
+                    <h2>Sứ mệnh của chúng tôi</h2>
+                    <p>Chúng tôi cam kết cung cấp kiến thức chăn nuôi chính xác, khoa học và dễ hiểu, giúp nông dân, học sinh - sinh viên, kỹ thuật viên và hộ nông nghiệp nâng cao hiệu quả sản xuất.</p>
+                </div>
+                <div class="about-image">
+                    <i class="fas fa-bullseye" style="font-size: 8rem; color: var(--primary-color);"></i>
+                </div>
+            </div>
+
+            <div class="about-section reverse">
+                <div class="about-image">
+                    <i class="fas fa-eye" style="font-size: 8rem; color: var(--secondary-color);"></i>
+                </div>
+                <div class="about-text">
+                    <h2>Tầm nhìn</h2>
+                    <p>Trở thành nền tảng chia sẻ kiến thức chăn nuôi hàng đầu tại Việt Nam, góp phần phát triển ngành chăn nuôi bền vững và hiện đại.</p>
+                </div>
+            </div>
+
+            <div class="values-section">
+                <h2 style="text-align: center; margin-bottom: 40px;">Giá trị cốt lõi</h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Chính xác</h3>
+                        <p>Thông tin được kiểm chứng bởi chuyên gia</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Dễ hiểu</h3>
+                        <p>Nội dung được trình bày rõ ràng, dễ áp dụng</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-users"></i>
+                        <h3>Cộng đồng</h3>
+                        <p>Kết nối và chia sẻ kinh nghiệm</p>
+                    </div>
+                    <div class="value-card">
+                        <i class="fas fa-leaf"></i>
+                        <h3>Bền vững</h3>
+                        <p>Hướng tới chăn nuôi thân thiện môi trường</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="100">0</div>
+                    <div class="stat-label">Bài viết chuyên môn</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="10000">0</div>
+                    <div class="stat-label">Người dùng</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="6">0</div>
+                    <div class="stat-label">Danh mục chính</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="24">0</div>
+                    <div class="stat-label">Hỗ trợ 24/7</div>
+                </div>
+            </div>
+
+            <!-- Team Section -->
+            <div class="team-section">
+                <h2 style="text-align: center; margin-bottom: 40px;">Đội ngũ của chúng tôi</h2>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Nguyễn Văn A</h3>
+                        <p class="team-role">Giám đốc điều hành</p>
+                        <p class="team-desc">15 năm kinh nghiệm trong ngành chăn nuôi</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Trần Thị B</h3>
+                        <p class="team-role">Chuyên gia kỹ thuật</p>
+                        <p class="team-desc">Tiến sĩ Chăn nuôi - Thú y</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h3>Lê Văn C</h3>
+                        <p class="team-role">Bác sĩ thú y</p>
+                        <p class="team-desc">Chuyên gia về phòng bệnh gia súc</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-avatar">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <h3>Phạm Thị D</h3>
+                        <p class="team-role">Biên tập viên</p>
+                        <p class="team-desc">Chuyên viên nội dung chăn nuôi</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Choose Us -->
+            <div class="why-choose-section">
+                <h2 style="text-align: center; margin-bottom: 40px;">Tại sao chọn chúng tôi?</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <h3>Nội dung chất lượng</h3>
+                        <p>Được biên soạn bởi các chuyên gia hàng đầu trong ngành</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Cập nhật liên tục</h3>
+                        <p>Thông tin mới nhất về kỹ thuật và công nghệ chăn nuôi</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Tương tác trực tiếp</h3>
+                        <p>Đặt câu hỏi và nhận tư vấn từ chuyên gia</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Truy cập mọi lúc</h3>
+                        <p>Học tập mọi lúc mọi nơi trên mọi thiết bị</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Miễn phí 100%</h3>
+                        <p>Tất cả kiến thức đều được chia sẻ miễn phí</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Hỗ trợ tận tâm</h3>
+                        <p>Đội ngũ luôn sẵn sàng giải đáp thắc mắc</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h2>Bắt đầu học tập ngay hôm nay!</h2>
+                <p>Tham gia cộng đồng và nâng cao kiến thức chăn nuôi của bạn</p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-primary btn-lg">Đăng ký ngay</a>
+                    <a href="category.html" class="btn btn-outline btn-lg">Khám phá bài viết</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>Về chúng tôi</h3>
+                    <p>Website cung cấp kiến thức kỹ thuật chăn nuôi chuyên nghiệp.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Liên kết</h3>
+                    <ul>
+                        <li><a href="index.html">Trang chủ</a></li>
+                        <li><a href="category.html">Danh mục</a></li>
+                        <li><a href="about.html">Về chúng tôi</a></li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Kỹ Thuật Chăn Nuôi. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Animated counter
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const step = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    element.textContent = target >= 1000 ? (target / 1000) + 'K+' : target + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+        
+        // Intersection Observer for counter animation
+        const observerOptions = {
+            threshold: 0.5
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.stat-number');
+                    counters.forEach(counter => {
+                        if (!counter.classList.contains('animated')) {
+                            counter.classList.add('animated');
+                            animateCounter(counter);
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const statsSection = document.querySelector('.stats-section');
+            if (statsSection) {
+                observer.observe(statsSection);
+            }
+        });
+    </script>
+</body>
+</html>

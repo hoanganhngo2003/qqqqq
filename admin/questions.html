@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Câu hỏi</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="../image/logo.png" alt="HA Farm Academy" class="admin-logo-img">
+                <span>HA Farm Academy</span>
+            </div>
+            <div class="admin-subtitle">Admin Panel</div>
+            <nav class="admin-nav">
+                <a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="articles.html"><i class="fas fa-newspaper"></i> Bài viết</a>
+                <a href="users.html"><i class="fas fa-users"></i> Người dùng</a>
+                <a href="comments.html"><i class="fas fa-comments"></i> Bình luận</a>
+                <a href="questions.html" class="active"><i class="fas fa-question-circle"></i> Câu hỏi</a>
+                <a href="contacts.html"><i class="fas fa-envelope"></i> Liên hệ</a>
+                <a href="../index.html"><i class="fas fa-home"></i> Về trang chủ</a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1>Quản lý Câu hỏi</h1>
+                <div class="user-info">
+                    <span id="adminName">Admin</span>
+                    <a href="#" id="adminLogout" class="btn btn-outline btn-sm">Đăng xuất</a>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="admin-toolbar">
+                <div class="toolbar-left">
+                    <span class="stat-badge">
+                        <i class="fas fa-question-circle"></i> Tổng: <strong id="totalQuestions">0</strong>
+                    </span>
+                    <span class="stat-badge warning">
+                        <i class="fas fa-clock"></i> Chờ trả lời: <strong id="pendingQuestions">0</strong>
+                    </span>
+                    <span class="stat-badge" style="background: #d4edda; color: #155724;">
+                        <i class="fas fa-check"></i> Đã trả lời: <strong id="answeredQuestions">0</strong>
+                    </span>
+                    <button class="btn btn-warning btn-sm" onclick="fixQuestionsData()" title="Sửa dữ liệu cũ">
+                        <i class="fas fa-wrench"></i> Sửa dữ liệu
+                    </button>
+                </div>
+                <div class="toolbar-right">
+                    <select id="statusFilter" class="filter-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending">Chờ trả lời</option>
+                        <option value="answered">Đã trả lời</option>
+                    </select>
+                    <input type="text" id="searchQuestion" placeholder="Tìm kiếm câu hỏi..." class="search-input">
+                </div>
+            </div>
+
+            <div class="data-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người hỏi</th>
+                            <th>Câu hỏi</th>
+                            <th>Danh mục</th>
+                            <th>Ngày hỏi</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questionsTable">
+                        <tr><td colspan="7" style="text-align: center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Answer Question Modal -->
+    <div class="modal" id="answerModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>Trả lời câu hỏi</h2>
+                <button class="modal-close" onclick="closeAnswerModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="questionInfo" class="question-info"></div>
+            <form id="answerForm" class="admin-form">
+                <input type="hidden" id="questionId">
+                <div class="form-group">
+                    <label for="answerText">Câu trả lời *</label>
+                    <textarea id="answerText" required rows="8" placeholder="Nhập câu trả lời chi tiết..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeAnswerModal()">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane"></i> Gửi câu trả lời
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let allQuestions = [];
+        let filteredQuestions = [];
+        
+        function loadQuestions() {
+            const questionsStr = localStorage.getItem('questions');
+            allQuestions = questionsStr ? JSON.parse(questionsStr) : [];
+            allQuestions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            filteredQuestions = [...allQuestions];
+            
+            updateStats();
+            renderQuestions();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalQuestions').textContent = allQuestions.length;
+            document.getElementById('pendingQuestions').textContent = allQuestions.filter(q => !q.answered).length;
+            document.getElementById('answeredQuestions').textContent = allQuestions.filter(q => q.answered).length;
+        }
+        
+        function renderQuestions() {
+            const tbody = document.getElementById('questionsTable');
+            
+            if (filteredQuestions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Không có câu hỏi nào</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = filteredQuestions.map(question => `
+                <tr>
+                    <td>${question.id}</td>
+                    <td>${question.userName || 'Không rõ'}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${question.question || question.title || 'Không có nội dung'}
+                    </td>
+                    <td>${question.category || 'Chung'}</td>
+                    <td>${formatDate(question.createdAt)}</td>
+                    <td>
+                        <span class="badge ${question.answered ? 'badge-success' : 'badge-warning'}">
+                            ${question.answered ? 'Đã trả lời' : 'Chờ trả lời'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-sm" onclick="viewQuestion(${question.id})" title="Xem & Trả lời">
+                                <i class="fas fa-reply"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${question.id})" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterQuestions() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchQuestion').value.toLowerCase();
+            
+            filteredQuestions = allQuestions.filter(question => {
+                const matchStatus = !statusFilter || 
+                    (statusFilter === 'pending' && !question.answered) ||
+                    (statusFilter === 'answered' && question.answered);
+                
+                const matchSearch = !searchTerm || 
+                    question.question.toLowerCase().includes(searchTerm) ||
+                    question.userName.toLowerCase().includes(searchTerm);
+                
+                return matchStatus && matchSearch;
+            });
+            
+            renderQuestions();
+        }
+        
+        function viewQuestion(questionId) {
+            const question = allQuestions.find(q => q.id === questionId);
+            if (!question) return;
+            
+            const infoHTML = `
+                <div class="chat-thread-admin">
+                    <div class="chat-header-admin">
+                        <div>
+                            <h4><i class="fas fa-question-circle"></i> ${question.question || question.title || 'Câu hỏi'}</h4>
+                            <div class="chat-meta-admin">
+                                <span><i class="fas fa-user"></i> ${question.userName || 'Không rõ'}</span>
+                                <span><i class="fas fa-folder"></i> ${question.category || 'Chung'}</span>
+                                <span><i class="fas fa-calendar"></i> ${formatDate(question.createdAt)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages-admin">
+                        <!-- User's question -->
+                        <div class="chat-message-admin user-msg">
+                            <div class="msg-avatar user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="msg-content">
+                                <div class="msg-header">
+                                    <strong>${question.userName || 'Người dùng'}</strong>
+                                    <span class="msg-time">${new Date(question.createdAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+                                </div>
+                                <div class="msg-text">${question.question || question.title || 'Câu hỏi'}</div>
+                            </div>
+                        </div>
+                        
+                        ${question.answers && question.answers.length > 0 ? question.answers.map(ans => `
+                            <div class="chat-message-admin admin-msg">
+                                <div class="msg-avatar admin-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="msg-content">
+                                    <div class="msg-header">
+                                        <strong><i class="fas fa-shield-alt"></i> ${ans.answeredBy}</strong>
+                                        <span class="msg-time">${new Date(ans.answeredAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+                                    </div>
+                                    <div class="msg-text">${ans.text}</div>
+                                </div>
+                            </div>
+                        `).join('') : `
+                            <div class="chat-empty-admin">
+                                <i class="fas fa-hourglass-half"></i>
+                                <p>Chưa có câu trả lời. Hãy trả lời câu hỏi bên dưới.</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('questionInfo').innerHTML = infoHTML;
+            document.getElementById('questionId').value = question.id;
+            document.getElementById('answerText').value = '';
+            document.getElementById('answerModal').classList.add('active');
+        }
+        
+        function closeAnswerModal() {
+            document.getElementById('answerModal').classList.remove('active');
+        }
+        
+        function deleteQuestion(questionId) {
+            if (confirm('Xóa câu hỏi này? Hành động không thể hoàn tác!')) {
+                allQuestions = allQuestions.filter(q => q.id !== questionId);
+                localStorage.setItem('questions', JSON.stringify(allQuestions));
+                loadQuestions();
+            }
+        }
+        
+        // Fix old questions data structure
+        function fixQuestionsData() {
+            if (!confirm('Sửa cấu trúc dữ liệu câu hỏi? Điều này sẽ cập nhật tất cả câu hỏi sang định dạng mới.')) {
+                return;
+            }
+            
+            const questionsStr = localStorage.getItem('questions');
+            if (!questionsStr) {
+                alert('Không có dữ liệu câu hỏi!');
+                return;
+            }
+            
+            let questions = JSON.parse(questionsStr);
+            let fixed = 0;
+            
+            questions = questions.map(q => {
+                let needsFix = false;
+                const fixedQ = { ...q };
+                
+                // Fix: title -> question
+                if (q.title && !q.question) {
+                    fixedQ.question = q.title;
+                    delete fixedQ.title;
+                    needsFix = true;
+                }
+                
+                // Fix: content field (merge into question if exists)
+                if (q.content && fixedQ.question) {
+                    fixedQ.question = fixedQ.question + ' - ' + q.content;
+                    delete fixedQ.content;
+                    needsFix = true;
+                } else if (q.content && !fixedQ.question) {
+                    fixedQ.question = q.content;
+                    delete fixedQ.content;
+                    needsFix = true;
+                }
+                
+                // Fix: status -> answered
+                if (q.status !== undefined && q.answered === undefined) {
+                    fixedQ.answered = q.status === 'answered';
+                    delete fixedQ.status;
+                    needsFix = true;
+                }
+                
+                // Ensure answers array exists
+                if (!fixedQ.answers) {
+                    fixedQ.answers = [];
+                    needsFix = true;
+                }
+                
+                // Ensure userName exists
+                if (!fixedQ.userName) {
+                    fixedQ.userName = 'Người dùng';
+                    needsFix = true;
+                }
+                
+                if (needsFix) fixed++;
+                return fixedQ;
+            });
+            
+            localStorage.setItem('questions', JSON.stringify(questions));
+            alert(`Đã sửa ${fixed} câu hỏi!`);
+            loadQuestions();
+        }
+        
+        // Submit answer
+        document.getElementById('answerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const questionId = parseInt(document.getElementById('questionId').value);
+            const answerText = document.getElementById('answerText').value.trim();
+            const currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                alert('Vui lòng đăng nhập để trả lời câu hỏi!');
+                return;
+            }
+            
+            if (answerText.length < 10) {
+                alert('Câu trả lời quá ngắn (ít nhất 10 ký tự)');
+                return;
+            }
+            
+            const question = allQuestions.find(q => q.id === questionId);
+            if (question) {
+                // Initialize answers array if not exists
+                if (!question.answers) {
+                    question.answers = [];
+                }
+                
+                // Add new answer to the thread
+                question.answers.push({
+                    text: answerText,
+                    answeredBy: currentUser.fullname || currentUser.email || 'Admin',
+                    answeredAt: new Date().toISOString()
+                });
+                
+                // Mark as answered
+                question.answered = true;
+                
+                localStorage.setItem('questions', JSON.stringify(allQuestions));
+                closeAnswerModal();
+                loadQuestions();
+                alert('Đã gửi câu trả lời!');
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadQuestions();
+            
+            document.getElementById('statusFilter').addEventListener('change', filterQuestions);
+            document.getElementById('searchQuestion').addEventListener('input', filterQuestions);
+        });
+    </script>
+
+    <style>
+        .question-detail {
+            padding: var(--spacing-lg);
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+        }
+        .question-info {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        /* Chat-style for Admin Questions */
+        .chat-thread-admin {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .chat-header-admin {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px 20px;
+        }
+        
+        .chat-header-admin h4 {
+            margin: 0 0 8px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chat-meta-admin {
+            display: flex;
+            gap: 16px;
+            font-size: 0.85rem;
+            opacity: 0.95;
+            flex-wrap: wrap;
+        }
+        
+        .chat-meta-admin span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .chat-messages-admin {
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .chat-message-admin {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .msg-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            color: white;
+        }
+        
+        .user-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+        
+        .admin-avatar {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .msg-content {
+            flex: 1;
+            max-width: 70%;
+        }
+        
+        .user-msg .msg-content {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px 12px 12px 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .admin-msg {
+            flex-direction: row-reverse;
+        }
+        
+        .admin-msg .msg-content {
+            background: #e7f3ff;
+            padding: 12px 16px;
+            border-radius: 12px 12px 4px 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 3px solid #28a745;
+        }
+        
+        .msg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .msg-header strong {
+            font-size: 0.9rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .msg-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        
+        .msg-text {
+            color: #333;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .chat-empty-admin {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .chat-empty-admin i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        .chat-empty-admin p {
+            margin: 0;
+        }
+    </style>
+            padding: var(--spacing-lg);
+            background: var(--bg-light);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-lg);
+        }
+        .question-info {
+            margin-bottom: var(--spacing-lg);
+        }
+    </style>
+</body>
+</html>
